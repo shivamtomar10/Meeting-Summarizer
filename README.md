@@ -159,7 +159,8 @@ server are listed in `requirements.txt`.
 - ✅ **Code structure** — separated concerns (transcription / summarization / storage / API / config)
 - ✅ **Backend storage** — every processed meeting persists to SQLite (`backend/database.py`), retrievable via `GET /meetings`
 
-## Demo Video
+<!-- ## Demo Video
 
 *(Add your demo video link here before submitting — record yourself uploading
 a sample audio file and walking through the generated transcript + summary.)*
+-->
