@@ -1,0 +1,28 @@
+# Environment / secrets
+.env
+*.env.local
+
+# Local SQLite database (generated at runtime — not part of the source)
+data/
+*.db
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Editor-specific
+.vscode/
+.idea/
+.DS_Store
+
+# Build / dependency artifacts
+dist/
+build/
+*.egg-info/
+
+# Uploaded audio during local testing
+sample_data/*
+!sample_data/README.md
