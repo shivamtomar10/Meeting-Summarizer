@@ -1,9 +1,13 @@
 """
 LLM-based summary generation.
 
-Sends the meeting transcript to an LLM and asks for a strict-JSON response
-containing an overview summary, key decisions, and action items. Strict JSON
-output avoids brittle regex/text parsing of free-form model output.
+Sends the meeting transcript to an LLM (via Groq's free-tier API) and asks
+for a strict-JSON response containing an overview summary, key decisions,
+and action items. Strict JSON output avoids brittle regex/text parsing of
+free-form model output.
+
+Groq exposes an OpenAI-compatible endpoint, so we reuse the `openai` Python
+client and just point it at Groq's base URL — no separate SDK needed.
 """
 
 import json
@@ -44,15 +48,15 @@ def _get_client() -> OpenAI:
     global _client
     if _client is None:
         config.require_api_key()
-        _client = OpenAI(api_key=config.OPENAI_API_KEY)
+        # Groq's API is OpenAI-compatible — same client, different base_url.
+        _client = OpenAI(
+            api_key=config.GROQ_API_KEY,
+            base_url="https://api.groq.com/openai/v1",
+        )
     return _client
 
 
 def generate_summary(transcript: str) -> dict:
-    if config.OPENAI_API_KEY == 'sk-mock-key':
-        import time; time.sleep(2)
-        return {'summary': 'Mock summary of the meeting discussing the Q4 roadmap.', 'key_decisions': ['Launch the new feature next month.'], 'action_items': [{'task': 'Prepare slide deck', 'owner': 'Bob', 'due': 'Friday'}]}
-
     """
     Generate a structured summary from a meeting transcript.
 

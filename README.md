@@ -17,8 +17,8 @@ Given a meeting audio recording, this app:
 meeting-summarizer/
 ├── backend/
 │   ├── main.py            # FastAPI app — /upload, /meetings, /health endpoints
-│   ├── transcription.py   # ASR integration (OpenAI Whisper API)
-│   ├── summarizer.py      # LLM summary generation (key decisions + action items)
+│   ├── transcription.py   # ASR — local faster-whisper (no API key, no cost)
+│   ├── summarizer.py      # LLM summary generation via Groq's free API
 │   ├── database.py        # SQLite persistence — stores every processed meeting
 │   ├── models.py          # Pydantic response models
 │   └── config.py          # Env/config loading
@@ -34,9 +34,13 @@ meeting-summarizer/
 ## Tech Stack
 
 - **Backend:** Python 3.10+, FastAPI, Uvicorn
-- **ASR:** OpenAI Whisper API (`whisper-1`) — swappable for Azure/Google Speech
-- **LLM:** OpenAI Chat Completions (`gpt-4o-mini`) for summarization
+- **ASR:** [faster-whisper](https://github.com/SYSTRAN/faster-whisper) — runs the Whisper model **locally**, free, no API key
+- **LLM:** [Groq](https://console.groq.com/) (`llama-3.1-8b-instant`) via an OpenAI-compatible endpoint — free tier, no credit card required
 - **Frontend:** Plain HTML/CSS/JS (no build step, no framework — keeps the repo dependency-free per submission guidelines)
+
+> Both the ASR and the LLM are free to run: Whisper transcription happens
+> entirely on your machine, and Groq's free tier (no credit card) is enough
+> for demo/grading use.
 
 ## Setup
 
@@ -50,14 +54,20 @@ source venv/bin/activate      # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 2. Configure your API key
+The first run downloads the local Whisper model weights (cached afterward),
+so the first transcription will be slower than later ones.
+
+### 2. Configure your (free) Groq API key
 
 Create a `.env` file in the project root (this file is git-ignored and must
 **never** be committed):
 
 ```
-OPENAI_API_KEY=sk-your-key-here
+GROQ_API_KEY=gsk-your-key-here
 ```
+
+Get a free key (no credit card needed) at https://console.groq.com/keys —
+sign-up takes under a minute.
 
 ### 3. Run the backend
 
@@ -144,7 +154,7 @@ curl -X POST http://localhost:8000/upload \
 
 This repo intentionally excludes (see `.gitignore`):
 - `venv/`, `__pycache__/` — environment/build artifacts
-- `.env` — secrets (API keys)
+- `.env` — secrets (API key)
 - `.vscode/`, `.idea/` — editor-specific files
 - `data/` — the local SQLite database, generated at runtime, not source code
 
@@ -153,7 +163,7 @@ server are listed in `requirements.txt`.
 
 ## Evaluation Focus Checklist
 
-- ✅ **Transcription accuracy** — uses OpenAI Whisper API (`whisper-1`)
+- ✅ **Transcription accuracy** — local Whisper via `faster-whisper`
 - ✅ **Summary quality** — structured JSON output: overview, decisions, action items
 - ✅ **LLM prompt effectiveness** — explicit, strict-JSON prompt in `summarizer.py`
 - ✅ **Code structure** — separated concerns (transcription / summarization / storage / API / config)
