@@ -171,5 +171,4 @@ server are listed in `requirements.txt`.
 
 ## Demo Video
 
-*(Add your demo video link here before submitting — record yourself uploading
-a sample audio file and walking through the generated transcript + summary.)*
+<video src="Meeting-Summarizer-Demo.mp4" width="100%" controls></video>
