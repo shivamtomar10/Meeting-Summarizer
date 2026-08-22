@@ -171,4 +171,9 @@ server are listed in `requirements.txt`.
 
 ## Demo Video
 
-<video src="Meeting-Summarizer-Demo.mp4" width="100%" controls></video>
+https://github.com/user-attachments/assets/3b861a5c-63a4-4ac6-9f31-15ef7cec5dd1
+
+
+
+
+
